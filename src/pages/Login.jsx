@@ -1,55 +1,59 @@
-import React, {useState} from 'react';
-import {Form, Label, Input, Button, Message,} from 'semantic-ui-react';
-import APIKit from '../util/API';
+import React, { useState } from 'react'
+import { Form, Label, Input, Button, Message } from 'semantic-ui-react'
+import APIKit from '../util/API'
 
-const Login = (props) => {
+const Login = props => {
   const [formData, setFormData] = useState({
-    email: "",
-    password: ""
+    email: '',
+    password: '',
   })
 
   const [response, setResponse] = useState({
-    success: "",
-    error: ""
+    success: '',
+    error: '',
   })
 
-
-
-  const handleChange = (event) => {
-    const {name, value} = event.target
+  const handleChange = event => {
+    const { name, value } = event.target
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     })
   }
 
-  const handleSubmit = () => {
-    APIKit
-      .post('/auth/login', formData)
-      .then(({data}) => {
-        console.log(data)
-        setResponse({
-          success: `Logged In as ${data.data.user.firstName} ${data.data.user.lastName}`
-        })
+  const handleSubmit = async () => {
+    try {
+      const { data } = await APIKit.post('/auth/login', formData)
+      setResponse({
+        success: `Logged in as ${data.data.user.firstName} ${data.data.user.lastName}`,
       })
-      .catch(error => {
-        setResponse({
-          error: error.response.data.message
-        })
-      }
-    )
+    } catch (error) {
+      setResponse({
+        error: error.response.data.message,
+      })
+    }
   }
-  
+
   return (
     <div>
       <Form onSubmit={handleSubmit}>
         <Form.Field>
           <Label>Email</Label>
-          <Input placeholder="Email" name="email" onChange={handleChange} required />
+          <Input
+            placeholder="Email"
+            name="email"
+            onChange={handleChange}
+            required
+          />
         </Form.Field>
         <Form.Field>
           <Label>Password</Label>
-          <Input placeholder="Password" name="password" onChange={handleChange} required />
+          <Input
+            placeholder="Password"
+            name="password"
+            onChange={handleChange}
+            required
+          />
         </Form.Field>
         <Button type="submit">Submit</Button>
       </Form>
@@ -64,4 +68,4 @@ const Login = (props) => {
   )
 }
 
-export default Login;
+export default Login
